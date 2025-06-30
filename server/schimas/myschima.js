@@ -11,6 +11,7 @@ const mydatapattern = mongoose.Schema({
 
 })
 
+
 const myschimatype = mongoose.model('userregistor',mydatapattern)
 
 module.exports = myschimatype
