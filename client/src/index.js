@@ -11,6 +11,8 @@ import Main from './modules/dashboard/Main'
 import Emploieslist from './modules/dashboard/Emploieslist'
 import Addproduct from './modules/dashboard/Addproduct';
 import Products from './modules/dashboard/Products';
+import Profile from './modules/dashboard/profile'
+import Useredit from './modules/dashboard/Useredit';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -25,6 +27,8 @@ root.render(
         <Route path='emploies' element={<Emploieslist/>}/>
         <Route path='newidea' element={<Addproduct/>}/>
         <Route path='products' element={<Products/>}/>
+        <Route path='emploies/profile/:id' element={<Profile/>}/>
+        <Route path='emploies/editUser/:id' element={<Useredit/>}/>
       </Route>
 
     </Routes>

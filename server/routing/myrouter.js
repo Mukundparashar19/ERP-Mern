@@ -38,6 +38,45 @@ myapp.get('/allemplist', async(req,res)=>{
     res.status(200).json({allemp:allemp,status:220,message:'all emp list'})
     })
 
+// del api
+myapp.delete('/deleterecord/:id', async(req,res)=>{
+    const {id} = req.params;
+    await mydatapattern.findByIdAndDelete({_id:id})
+    res.status(200).json({message:'selected data removes'})
+    })
+
+//login api
+myapp.post('/userlogin', async(req,res)=>{
+    const{email,pass} = req.body
+    const userrecord = await mydatapattern.findOne({email:email})
+    if(userrecord){
+        if(userrecord.email==email && userrecord.pass==pass){
+            res.status(200).json({message:"successfully login",status:240})
+        }else{
+          res.status(200).json({message:"user and password not match",status:680});
+        }
+    }else{
+      res.status(200).json({message:"user not find",status:420});
+    }
+})
+
+
+// view simgle user record api 
+myapp.get('/singleuserrecoed/:id', async(req,res)=>{
+    const {id} = req.params;
+    const singleuser = await mydatapattern.findById({_id:id})
+    res.status(200).json({message:'single user data',status:255,mydata:singleuser})
+    console.log(singleuser)
+})
+
+// update user api 
+myapp.patch('/userupdate/:id', async(req,res)=>{
+    const {id} = req.params
+    const eduser = await mydatapattern.findByIdAndUpdate(id,req.body,{new:true})
+    res.status(200).json({message:'update user',status:251,mydata:eduser})
+    })
+
+
 
 
 module.exports = myapp

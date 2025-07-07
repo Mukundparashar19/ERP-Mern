@@ -4,7 +4,8 @@ import { CiRead } from "react-icons/ci";
 import { GrUpdate } from "react-icons/gr";
 import { MdDeleteForever } from "react-icons/md";
 import axios from 'axios';
-
+import { ToastContainer, toast } from 'react-toastify';
+import {Link} from 'react-router-dom'
 
 export default function Emploieslist() {
 
@@ -19,6 +20,17 @@ const myallemp =()=>{
 useEffect(()=>{
   myallemp()
 },[])
+
+const deleterecord =(id)=>{
+axios.delete(`http://localhost:8700/deleterecord/${id}`).then((d)=>{
+toast.success("record delete successfully",{autoClose:500});
+  myallemp()
+})
+}
+
+
+
+
 
   
   return (
@@ -35,6 +47,7 @@ useEffect(()=>{
           <th scope="col">Actions</th>
         </tr>
       </thead>
+      <ToastContainer/>
       <tbody>
 {allemp.map((emp,index)=>{
 return (
@@ -49,13 +62,13 @@ return (
           </td>
           <td>{emp.phone}</td>
           <td className="d-flex gap-2 ">
-            <button type="button" class="btn btn-info d-flex align-item-center">
+            <Link to={'profile/'+emp._id} type="button" class="btn btn-info d-flex align-item-center">
               <CiRead/>
-            </button>
-            <button type="button" class="btn btn-warning d-flex align-item-center">
+            </Link>
+            <Link to={'editUser/'+emp._id} type="button" class="btn btn-warning d-flex align-item-center">
               <GrUpdate/>
-            </button>
-            <button type="button" class="btn btn-danger d-flex align-item-center">
+            </Link>
+            <button type="button" onClick={()=>deleterecord(emp._id)} class="btn btn-danger d-flex align-item-center">
              <MdDeleteForever/>
             </button>
           </td>
