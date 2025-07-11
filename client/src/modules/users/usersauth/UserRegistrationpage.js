@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 
 export default function UserRegistrationpage() {
+  const navigate = useNavigate()
   const [user, setuser] = useState({
     fullname: "",
     password: "",
@@ -43,6 +45,9 @@ export default function UserRegistrationpage() {
     // console.log(data.status);
     if(data.status === 255){
       toast.success('successfully registor user',{position:'top-center',autoClose:1000})
+      setTimeout(() => {
+        navigate('/login')
+      }, 1500);        
       }
        if (data.status === 355){
               toast.error('incomplete form',{position:'top-center',autoClose:1000})

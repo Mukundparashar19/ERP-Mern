@@ -1,7 +1,14 @@
 const express = require('express')
+const bcrypt = require('bcrypt') 
+const jwt = require('jsonwebtoken') 
 const mydatapattern = require('../schimas/myschima')
 
 const myapp = express.Router()
+
+require('dotenv').config();
+const secret = process.env.JWT_SECRET
+
+
 
 myapp.get('/',(req,res)=>{
     res.send('Welscome to express js')
@@ -12,13 +19,14 @@ myapp.get('/about',(req,res)=>{
 })
 
 
-// api  POST
+// api  POST (bcript used)
 myapp.post('/registorpage', async (req,res)=>{
 const{fullname,email,phone,dob,pass,profile} = req.body;
 
+const hashedPassword = await bcrypt.hash(pass,10)
 
 const postdata = new mydatapattern({
-    fullname,email,phone,dob,pass,profile
+    fullname,email,phone,dob,pass:hashedPassword,profile
 });
 if(fullname == '' || email == '' || phone == '' || dob == '' || pass == '' || profile == ''){
 res.status(200).json({data:postdata,status:355,message:'input error'})
@@ -50,8 +58,11 @@ myapp.post('/userlogin', async(req,res)=>{
     const{email,pass} = req.body
     const userrecord = await mydatapattern.findOne({email:email})
     if(userrecord){
-        if(userrecord.email==email && userrecord.pass==pass){
-            res.status(200).json({message:"successfully login",status:240})
+        if(userrecord.email==email && await bcrypt.compare(pass, userrecord.pass)){
+             const token = jwt.sign({email:userrecord.email,pass:userrecord.pass},secret,{
+                expiresIn: '1h'
+             })
+            res.status(200).json({message:"successfully login",status:240,mytoken:token})
         }else{
           res.status(200).json({message:"user and password not match",status:680});
         }

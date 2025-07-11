@@ -24,6 +24,7 @@ if(data.email === '' || data.pass === ''){
       const resdata = d.data.status
       console.log('midle midle');
       console.log(d.data.status);
+      console.log(d.data.mytoken);
             
       if(resdata===240){
         toast.success('welcome',{autoClose:2000})
