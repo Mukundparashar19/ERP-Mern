@@ -11,7 +11,6 @@ export default function UserLoginpage() {
     formState: { errors },
   } = useForm()
 
-// const [login, setlogin] = useState()
 const navigate = useNavigate()
 
 const onEnter = async (data)=>{
@@ -28,6 +27,7 @@ if(data.email === '' || data.pass === ''){
             
       if(resdata===240){
         toast.success('welcome',{autoClose:2000})
+        localStorage.setItem('settoken',d.data.mytoken)
         setTimeout(()=>{
            navigate('/dashboard')
         },2000)

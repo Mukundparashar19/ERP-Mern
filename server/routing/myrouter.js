@@ -1,4 +1,5 @@
 const express = require('express')
+const verifyToken = require('./midelware')
 const bcrypt = require('bcrypt') 
 const jwt = require('jsonwebtoken') 
 const mydatapattern = require('../schimas/myschima')
@@ -41,7 +42,7 @@ console.log(postdata);
 })
 
 // api GET
-myapp.get('/allemplist', async(req,res)=>{
+myapp.get('/allemplist',verifyToken, async(req,res)=>{
     const allemp = await mydatapattern.find() // mongodb command
     res.status(200).json({allemp:allemp,status:220,message:'all emp list'})
     })

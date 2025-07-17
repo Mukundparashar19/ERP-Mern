@@ -3,36 +3,44 @@ import { IoIosCreate } from "react-icons/io";
 import { CiRead } from "react-icons/ci";
 import { GrUpdate } from "react-icons/gr";
 import { MdDeleteForever } from "react-icons/md";
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import {Link} from 'react-router-dom'
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { Apilist } from "../apis/Myapi";
 
 export default function Emploieslist() {
+  const mynav = useNavigate();
+  const gettoken = localStorage.getItem("settoken");
+  const [allemp, setallemp] = useState([]);
+  const myallemp = () => {
+    axios
+      .get(`${Apilist}/allemplist`,{headers: {Authorization: `Bearer ${gettoken}`}})
+      .then((d) => {
+        console.log(d.data.allemp);
+        setallemp(d.data.allemp);
+      })
+      .catch((err) => {
+        if (err.status === 420) {
+          mynav("/");
+        }
+      });
+  };
 
-const [allemp, setallemp] = useState([])
-const myallemp =()=>{
-  axios.get('http://localhost:8700/allemplist').then((d)=>{
-    console.log(d.data.allemp);
-    setallemp(d.data.allemp);    
-  })
-}
+  useEffect(() => {
+    myallemp();
+  }, []);
 
-useEffect(()=>{
-  myallemp()
-},[])
+  const deleterecord = (id) => {
+    axios
+      .delete(`http://localhost:8700/deleterecord/${id}`, {
+        headers: { Authorization: `Bearer${gettoken}` },
+      })
+      .then((d) => {
+        toast.success("record delete successfully", { autoClose: 500 });
+        myallemp();
+      });
+  };
 
-const deleterecord =(id)=>{
-axios.delete(`http://localhost:8700/deleterecord/${id}`).then((d)=>{
-toast.success("record delete successfully",{autoClose:500});
-  myallemp()
-})
-}
-
-
-
-
-
-  
   return (
     <table class="table table-dark mt-2">
       <thead>
@@ -47,36 +55,46 @@ toast.success("record delete successfully",{autoClose:500});
           <th scope="col">Actions</th>
         </tr>
       </thead>
-      <ToastContainer/>
+      <ToastContainer />
       <tbody>
-{allemp.map((emp,index)=>{
-return (
-   <tr>
-          <th scope="row">{emp._id}</th>
-          <td>{++index}</td>
-          <td>{emp.fullname}</td>
-          <td>{emp.email}</td>
-          <td>{emp.dob}</td>
-          <td>
-            <img src={emp.profile} width={30} height={20} alt='skdjf' />
-          </td>
-          <td>{emp.phone}</td>
-          <td className="d-flex gap-2 ">
-            <Link to={'profile/'+emp._id} type="button" class="btn btn-info d-flex align-item-center">
-              <CiRead/>
-            </Link>
-            <Link to={'editUser/'+emp._id} type="button" class="btn btn-warning d-flex align-item-center">
-              <GrUpdate/>
-            </Link>
-            <button type="button" onClick={()=>deleterecord(emp._id)} class="btn btn-danger d-flex align-item-center">
-             <MdDeleteForever/>
-            </button>
-          </td>
-        </tr>
-)
-})}
-
-       
+        {allemp.map((emp, index) => {
+          return (
+            <tr>
+              <th scope="row">{emp._id}</th>
+              <td>{++index}</td>
+              <td>{emp.fullname}</td>
+              <td>{emp.email}</td>
+              <td>{emp.dob}</td>
+              <td>
+                <img src={emp.profile} width={30} height={20} alt="skdjf" />
+              </td>
+              <td>{emp.phone}</td>
+              <td className="d-flex gap-2 ">
+                <Link
+                  to={"profile/" + emp._id}
+                  type="button"
+                  class="btn btn-info d-flex align-item-center"
+                >
+                  <CiRead />
+                </Link>
+                <Link
+                  to={"editUser/" + emp._id}
+                  type="button"
+                  class="btn btn-warning d-flex align-item-center"
+                >
+                  <GrUpdate />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => deleterecord(emp._id)}
+                  class="btn btn-danger d-flex align-item-center"
+                >
+                  <MdDeleteForever />
+                </button>
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
